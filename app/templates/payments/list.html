@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Planos</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1 class="mb-4">Lista de Pagamentos</h1>
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th scope="col">Usuário</th>
+              <th scope="col">Plano</th>
+              <th scope="col">Status</th>
+              <th scope="col">Data de Vencimento</th>
+              <th scope="col">Data de Pagamento</th>
+              <th scope="col">Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for payment in payments %}
+              <tr>
+                <td>{{ payment.user.username }}</td>
+                <td>{{ payment.plan.name }}</td>
+                <td>
+                  <span class="badge {% if payment.status == 'pago' %}bg-success{% elif payment.status == 'pendente' %}bg-warning{% else %}bg-danger{% endif %}">
+                    {{ payment.get_status_display }}
+                  </span>
+                </td>
+                <td>{{ payment.due_date }}</td>
+                <td>{{ payment.payment_date|default:"Não pago" }}</td>
+                <td>
+                  <a href="{% url 'payment_detail' pk=payment.pk %}" class="btn btn-info btn-sm">Ver Detalhes</a>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

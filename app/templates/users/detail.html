@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalhes do Usuário</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1 class="my-4">Detalhes do Usuário: {{ user.username }}</h1>
+        <dl class="row">
+            <dt class="col-sm-3">Email</dt>
+            <dd class="col-sm-9">{{ user.email }}</dd>
+
+            <dt class="col-sm-3">CPF</dt>
+            <dd class="col-sm-9">{{ user.CPF }}</dd>
+
+            <dt class="col-sm-3">Data de Nascimento</dt>
+            <dd class="col-sm-9">{{ user.date_of_birth }}</dd>
+
+            <dt class="col-sm-3">Telefone</dt>
+            <dd class="col-sm-9">{{ user.phone }}</dd>
+
+            <dt class="col-sm-3">Endereço</dt>
+            <dd class="col-sm-9">{{ user.address }}</dd>
+
+            <dt class="col-sm-3">Função</dt>
+            <dd class="col-sm-9">{{ user.get_role_display }}</dd>
+        </dl>
+        <a href="{% url 'user_list' %}" class="btn btn-secondary">Voltar à Lista</a>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
