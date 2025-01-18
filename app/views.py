@@ -3,9 +3,109 @@ from django.http import JsonResponse
 from django.views import View
 from .models import *
 
+from django.db.models import Q
+
+# Usuário aluno
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
+from django.shortcuts import render, get_object_or_404
+from .models import *
+from django.contrib.auth import authenticate, login
+from django.shortcuts import render, redirect
+
+from django.shortcuts import render
+from django.views.generic import ListView
+
+# Alterações no arquivo views.py
+
+from django.shortcuts import render
+from django.views.generic import ListView
+from .models import User, Payment, Attendance, Training, Plan
+
+class StudentTrainingListView(View):
+    def get(self, request):
+        query = request.GET.get('username', '')  # Pega o nome do usuário digitado
+        # Filtra os treinos pelo nome do usuário
+        trainings = Training.objects.filter(Q(user__username__icontains=query) | Q(user__email__icontains=query))
+        
+        return render(request, 'trainings/student_training_list.html', {'trainings': trainings})
+
+# View para exibir todos os alunos para o administrador
+class AdminStudentListView(ListView):
+    model = User
+    template_name = 'students/admin_student_list.html'
+    context_object_name = 'students'
+    
+    def get_queryset(self):
+        # Apenas alunos (não administradores ou instrutores)
+        return User.objects.filter(role='aluno')
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        
+        # Dados importantes para o relatório
+        total_students = User.objects.filter(role='aluno').count()
+        total_payments = Payment.objects.filter(status='pago').count()
+        total_pending_payments = Payment.objects.filter(status='pendente').count()
+        total_unpaid_payments = Payment.objects.filter(status='atrasado').count()
+
+        context.update({
+            'total_students': total_students,
+            'total_payments': total_payments,
+            'total_pending_payments': total_pending_payments,
+            'total_unpaid_payments': total_unpaid_payments,
+        })
+
+        return context
+
+
+@method_decorator(login_required, name='dispatch')
+class StudentProfileView(View):
+    def get(self, request):
+        # Recupera os dados do usuário logado
+        user = request.user
+
+        # Dados relacionados ao aluno
+        payments = Payment.objects.filter(user=user)
+        attendances = Attendance.objects.filter(user=user)
+        trainings = Training.objects.filter(user=user)
+        plans = Plan.objects.filter(payment__user=user).distinct()
+
+        context = {
+            "user": user,
+            "payments": payments,
+            "attendances": attendances,
+            "trainings": trainings,
+            "plans": plans,
+        }
+        return render(request, "students/profile.html", context)
+
+# View para listar instrutores
+class InstructorListView(View):
+    def get(self, request):
+        # Filtra os instrutores (assumindo que "role" é 'instrutor')
+        instructors = User.objects.filter(role='instrutor')
+        return render(request, "instructors/list.html", {"instructors": instructors})
+
+# View para listar treinos de alunos
+class StudentTrainingListView(View):
+    def get(self, request):
+        query = request.GET.get('username', '')  # Pega o nome do usuário digitado
+        # Filtra os treinos pelo nome do usuário
+        trainings = Training.objects.filter(Q(user__username__icontains=query) | Q(user__email__icontains=query))
+        
+        return render(request, 'trainings/student_training_list.html', {'trainings': trainings})
+
 # Página inicial
 def home(request):
     return render(request, "index.html")
+
+# Visualização de Perfil de Usuário (filtrado por tipo)
+class UserProfileListView(View):
+    def get(self, request, role):
+        # Filtrando usuários pelo tipo de papel (role)
+        users = User.objects.filter(role=role)
+        return render(request, "users/profile_list.html", {"users": users, "role": role})
     
 # Visualização de Usuários
 class UserListView(View):

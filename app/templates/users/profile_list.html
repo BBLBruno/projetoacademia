@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Perfil de {{ role }}</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+  <header>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <div class="container">
+        <a class="navbar-brand" href="{% url 'home' %}">Academia</a>
+      </div>
+    </nav>
+  </header>
+
+  <div class="container mt-5">
+    <h1 class="display-4">Perfil de {{ role }}</h1>
+
+    <!-- Exibindo diferentes seções com base no papel do usuário -->
+    {% if role == 'Administrador' %}
+      <h3>Usuários</h3>
+      <ul>
+        {% for user in users %}
+          <li>{{ user.username }} - {{ user.email }}</li>
+        {% empty %}
+          <li>Nenhum usuário encontrado.</li>
+        {% endfor %}
+      </ul>
+
+      <h3>Pagamentos</h3>
+      <ul>
+        {% for payment in payments %}
+          <li>{{ payment.user.username }} - {{ payment.status }}</li>
+        {% endfor %}
+      </ul>
+
+      <h3>Frequências</h3>
+      <ul>
+        {% for attendance in attendances %}
+          <li>{{ attendance.user.username }} - {{ attendance.date }}</li>
+        {% endfor %}
+      </ul>
+
+      <!-- Continue listando outros dados como Equipamentos, Treinos, etc... -->
+
+    {% elif role == 'Instrutor' %}
+      <h3>Frequências</h3>
+      <ul>
+        {% for attendance in attendances %}
+          <li>{{ attendance.user.username }} - {{ attendance.date }}</li>
+        {% endfor %}
+      </ul>
+
+      <h3>Treinos</h3>
+      <ul>
+        {% for training in trainings %}
+          <li>{{ training.user.username }} - {{ training.exercises }}</li>
+        {% endfor %}
+      </ul>
+
+      <!-- Continue com Equipamentos, Exercícios, etc... -->
+
+    {% elif role == 'Aluno' %}
+      <h3>Meu Treino</h3>
+      <ul>
+        {% for training in trainings %}
+          <li>{{ training.exercises }} - {{ training.created_at }}</li>
+        {% endfor %}
+      </ul>
+
+      <h3>Planos</h3>
+      <ul>
+        {% for plan in plans %}
+          <li>{{ plan.name }} - {{ plan.duration_in_months }} meses</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

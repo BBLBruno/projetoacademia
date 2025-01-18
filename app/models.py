@@ -4,14 +4,16 @@ from django.contrib.auth.models import AbstractUser
 # Custom User Model
 class User(AbstractUser):
     CPF = models.CharField(max_length=11, unique=True, verbose_name="CPF")
-    date_of_birth = models.DateField(verbose_name="Data de Nascimento")
+    date_of_birth = models.DateField(verbose_name="Data de Nascimento", null=True, blank=True)
     phone = models.CharField(max_length=15, verbose_name="Telefone")
+    especialidade = models.CharField(max_length=255, blank=True, null=True)  # Novo campo
     address = models.TextField(verbose_name="Endereço")
     ROLE_CHOICES = [
         ("aluno", "Aluno"),
         ("instrutor", "Instrutor"),
         ("administrador", "Administrador"),
     ]
+
     groups = models.ManyToManyField(
         'auth.Group',
         related_name='custom_user_set',  # Novo nome de reverso para o relacionamento
@@ -48,16 +50,12 @@ class Payment(models.Model):
 
 # Frequência
 class Attendance(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Usuário")
+    user = models.ForeignKey('User', on_delete=models.CASCADE, verbose_name="Usuário")
     date = models.DateField(auto_now_add=True, verbose_name="Data")
     check_in_time = models.TimeField(auto_now_add=True, verbose_name="Horário de Check-in")
 
-# Treino
-class Training(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Aluno")
-    instructor = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="treinos", verbose_name="Instrutor")
-    exercises = models.TextField(verbose_name="Exercícios")
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Criado em")
+    def __str__(self):
+        return f"Frequência de {self.user.username} - {self.date.strftime('%d/%m/%Y %H:%M')}"
 
 # Equipamento
 class Equipment(models.Model):
@@ -75,3 +73,22 @@ class Exercise(models.Model):
 
     def __str__(self):
         return self.name
+
+# Ficha de Treino
+class FichaDeTreino(models.Model):
+    training = models.ForeignKey('Training', on_delete=models.CASCADE, verbose_name="Treino")
+    exercise = models.ForeignKey('Exercise', on_delete=models.CASCADE, verbose_name="Exercício")
+    repetitions = models.IntegerField(default=12, verbose_name="Número de Repetições")
+    rest_time = models.IntegerField(default=90, verbose_name="Tempo de Descanso (segundos)")
+
+    def __str__(self):
+        return f"{self.training.user.username} - {self.exercise.name}"
+
+# Treino
+class Training(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Aluno")
+    instructor = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="treinos", verbose_name="Instrutor")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Criado em")
+    
+    def __str__(self):
+        return f"Treino de {self.user.username} - {self.created_at.strftime('%d/%m/%Y %H:%M')}"

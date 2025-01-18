@@ -9,6 +9,17 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+
+# Modelo de usuário personalizado
+AUTH_USER_MODEL = 'app.User'
+
+# URL de redirecionamento após login
+LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/perfil/aluno/'
+
+# Configuração de logout
+LOGOUT_REDIRECT_URL = 'home'
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -35,10 +46,9 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            # Diretório global para templates do projeto
-            os.path.join(BASE_DIR, 'templates'),
+            BASE_DIR / 'templates',  
         ],
-        'APP_DIRS': True,  # Permite buscar templates nas pastas 'templates' de cada app
+        'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',

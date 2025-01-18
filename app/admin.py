@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import User, Plan, Payment, Attendance, Training, Equipment, Exercise
+from .models import *
 
 # Customização do modelo User
 @admin.register(User)
@@ -32,6 +32,19 @@ class AttendanceAdmin(admin.ModelAdmin):
     list_filter = ("date",)
     ordering = ("date", "check_in_time")
 
+# Admin para o modelo FichaDeTreino
+@admin.register(FichaDeTreino)
+class FichaDeTreinoAdmin(admin.ModelAdmin):
+    list_display = ("training", "exercise", "repetitions", "rest_time")
+    search_fields = ("training__user__username", "exercise__name")
+    list_filter = ("training__user__username", "exercise__name")
+    ordering = ("training", "exercise")
+
+# Inline para a ficha de treino
+class FichaDeTreinoInline(admin.TabularInline):
+    model = FichaDeTreino
+    extra = 1  # Define o número de fichas de treino extras que podem ser adicionadas
+
 # Admin para o modelo Training
 @admin.register(Training)
 class TrainingAdmin(admin.ModelAdmin):
@@ -39,6 +52,7 @@ class TrainingAdmin(admin.ModelAdmin):
     search_fields = ("user__username", "instructor__username")
     list_filter = ("created_at",)
     ordering = ("created_at",)
+    inlines = [FichaDeTreinoInline]
 
 # Admin para o modelo Equipment
 @admin.register(Equipment)

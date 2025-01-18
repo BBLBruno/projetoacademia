@@ -1,9 +1,34 @@
 from django.urls import path
 from . import views
+from django.contrib.auth import views as auth_views
+
+
+# Usuário Aluno
+from django.urls import path
+from . import views
+from django.contrib.auth import views as auth_views
 
 urlpatterns = [
+      
+
+    # Login e Logout
+    path('login/', auth_views.LoginView.as_view(template_name="auth/login.html"), name='login'),
+    path('logout/', auth_views.LogoutView.as_view(), name='logout'),
+
     # Página inicial
     path('', views.home, name='home'),
+
+    # Página de administradores - Exibir todos os alunos
+    path('perfil/alunos/', views.AdminStudentListView.as_view(), name='admin_student_list'),
+
+    # Página de instrutores.
+    path('instrutores/', views.InstructorListView.as_view(), name='instructor_list'),
+
+    # Página de Treinos para Alunos
+    path('treinos/aluno/', views.StudentTrainingListView.as_view(), name='student_training_list'),
+
+    # Perfil de Usuário por tipo
+    path('perfil/<str:role>/', views.UserProfileListView.as_view(), name='user_profile_list'),
 
     # Usuários
     path('usuarios/', views.UserListView.as_view(), name='user_list'),
