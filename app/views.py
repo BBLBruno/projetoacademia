@@ -2,7 +2,6 @@ from django.shortcuts import render, get_object_or_404
 from django.http import JsonResponse
 from django.views import View
 from .models import *
-
 from django.db.models import Q
 
 # Usuário aluno
@@ -22,12 +21,17 @@ from django.shortcuts import render
 from django.views.generic import ListView
 from .models import User, Payment, Attendance, Training, Plan
 
+
 class StudentTrainingListView(View):
     def get(self, request):
         query = request.GET.get('username', '')  # Pega o nome do usuário digitado
-        # Filtra os treinos pelo nome do usuário
-        trainings = Training.objects.filter(Q(user__username__icontains=query) | Q(user__email__icontains=query))
-        
+        # Filtra todos os treinos, independentemente do usuário logado
+        trainings = Training.objects.all()
+
+        # Aplica o filtro se o nome de usuário for fornecido
+        if query:
+            trainings = trainings.filter(Q(user__username__icontains=query) | Q(user__email__icontains=query))
+     
         return render(request, 'trainings/student_training_list.html', {'trainings': trainings})
 
 # View para exibir todos os alunos para o administrador
@@ -58,27 +62,23 @@ class AdminStudentListView(ListView):
 
         return context
 
+# Class para exibir detalhes do treino, incluindo os Training Sheets
+class TrainingDetailView(View):
+    def get(self, request, pk):
+        # Obtém o treino pelo ID (pk)
+        training = get_object_or_404(Training, pk=pk)
+        # Obtém todos os training sheets relacionados ao treino
+        training_sheets = TrainingSheet.objects.filter(training=training)
+        return render(request, 'trainings/detail.html', {'training': training, 'training_sheets': training_sheets})
 
-@method_decorator(login_required, name='dispatch')
-class StudentProfileView(View):
-    def get(self, request):
-        # Recupera os dados do usuário logado
-        user = request.user
-
-        # Dados relacionados ao aluno
-        payments = Payment.objects.filter(user=user)
+# Class para exibir detalhes da frequência
+class AttendanceDetailView(View):
+    def get(self, request, pk):
+        # Obtém o usuário pelo ID (pk)
+        user = get_object_or_404(User, pk=pk)
+        # Obtém todas as frequências do aluno
         attendances = Attendance.objects.filter(user=user)
-        trainings = Training.objects.filter(user=user)
-        plans = Plan.objects.filter(payment__user=user).distinct()
-
-        context = {
-            "user": user,
-            "payments": payments,
-            "attendances": attendances,
-            "trainings": trainings,
-            "plans": plans,
-        }
-        return render(request, "students/profile.html", context)
+        return render(request, 'attendance/detail.html', {'user': user, 'attendances': attendances})
 
 # View para listar instrutores
 class InstructorListView(View):
@@ -86,15 +86,6 @@ class InstructorListView(View):
         # Filtra os instrutores (assumindo que "role" é 'instrutor')
         instructors = User.objects.filter(role='instrutor')
         return render(request, "instructors/list.html", {"instructors": instructors})
-
-# View para listar treinos de alunos
-class StudentTrainingListView(View):
-    def get(self, request):
-        query = request.GET.get('username', '')  # Pega o nome do usuário digitado
-        # Filtra os treinos pelo nome do usuário
-        trainings = Training.objects.filter(Q(user__username__icontains=query) | Q(user__email__icontains=query))
-        
-        return render(request, 'trainings/student_training_list.html', {'trainings': trainings})
 
 # Página inicial
 def home(request):

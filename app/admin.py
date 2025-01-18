@@ -32,17 +32,17 @@ class AttendanceAdmin(admin.ModelAdmin):
     list_filter = ("date",)
     ordering = ("date", "check_in_time")
 
-# Admin para o modelo FichaDeTreino
-@admin.register(FichaDeTreino)
-class FichaDeTreinoAdmin(admin.ModelAdmin):
+# Admin para o modelo TrainingSheet
+@admin.register(TrainingSheet)
+class TrainingSheetAdmin(admin.ModelAdmin):
     list_display = ("training", "exercise", "repetitions", "rest_time")
     search_fields = ("training__user__username", "exercise__name")
     list_filter = ("training__user__username", "exercise__name")
     ordering = ("training", "exercise")
 
 # Inline para a ficha de treino
-class FichaDeTreinoInline(admin.TabularInline):
-    model = FichaDeTreino
+class TrainingSheetInline(admin.TabularInline):
+    model = TrainingSheet
     extra = 1  # Define o número de fichas de treino extras que podem ser adicionadas
 
 # Admin para o modelo Training
@@ -52,7 +52,7 @@ class TrainingAdmin(admin.ModelAdmin):
     search_fields = ("user__username", "instructor__username")
     list_filter = ("created_at",)
     ordering = ("created_at",)
-    inlines = [FichaDeTreinoInline]
+    inlines = [TrainingSheetInline]
 
 # Admin para o modelo Equipment
 @admin.register(Equipment)

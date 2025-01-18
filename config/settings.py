@@ -15,7 +15,6 @@ AUTH_USER_MODEL = 'app.User'
 
 # URL de redirecionamento após login
 LOGIN_URL = '/login/'
-LOGIN_REDIRECT_URL = '/perfil/aluno/'
 
 # Configuração de logout
 LOGOUT_REDIRECT_URL = 'home'
