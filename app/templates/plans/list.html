@@ -1,14 +1,31 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista de Planos</title>
+    <title>Treinos para Alunos</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
-    <div class="container">
-        <h1 class="my-4">Lista de Planos</h1>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container">
+                <a class="navbar-brand" href="{% url 'home' %}">Academia</a>
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a href="{% url 'home' %}" class="btn btn-danger">Voltar</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container mt-5">
+        <h1 class="display-4 text-center">Confira nossas ofertas!</h1>
+        
+
+        <h2 class="text-center mt-5">Planos Disponíveis</h2>
+
         <table class="table table-bordered">
             <thead>
                 <tr>
@@ -25,13 +42,12 @@
                     <td>{{ plan.duration_in_months }}</td>
                     <td>R$ {{ plan.price }}</td>
                     <td>
-                        <a href="{% url 'plan_detail' plan.pk %}" class="btn btn-info">Detalhes</a>
+                        <a href="https://wa.me/35999420655" target="_blank" class="btn btn-success">Contratar pelo WhatsApp</a>
                     </td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
-    </div>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>

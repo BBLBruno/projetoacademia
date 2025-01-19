@@ -1,27 +1,28 @@
-from django.shortcuts import render, get_object_or_404
-from django.http import JsonResponse
+from django.shortcuts import render, get_object_or_404, redirect
+from django.http import JsonResponse, Http404
 from django.views import View
 from .models import *
 from django.db.models import Q
-
-# Usuário aluno
+from django.views.generic import ListView, DetailView
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-from django.shortcuts import render, get_object_or_404
-from .models import *
 from django.contrib.auth import authenticate, login
-from django.shortcuts import render, redirect
+from django.contrib.auth.mixins import LoginRequiredMixin
 
-from django.shortcuts import render
-from django.views.generic import ListView
+# View para exibir todos os treinos dos alunos
+class StudentTrainingListView(View):
+    def get(self, request):
+        query = request.GET.get('username', '')  # Pega o nome do usuário digitado
+        # Filtra todos os treinos, independentemente do usuário logado
+        trainings = Training.objects.all()
 
-# Alterações no arquivo views.py
+        # Aplica o filtro se o nome de usuário for fornecido
+        if query:
+            trainings = trainings.filter(Q(user__username__icontains=query) | Q(user__email__icontains=query))
+     
+        return render(request, 'trainings/student_training_list.html', {'trainings': trainings})
 
-from django.shortcuts import render
-from django.views.generic import ListView
-from .models import User, Payment, Attendance, Training, Plan
-
-
+# View para exibir todos os treinos dos alunos
 class StudentTrainingListView(View):
     def get(self, request):
         query = request.GET.get('username', '')  # Pega o nome do usuário digitado
@@ -35,11 +36,14 @@ class StudentTrainingListView(View):
         return render(request, 'trainings/student_training_list.html', {'trainings': trainings})
 
 # View para exibir todos os alunos para o administrador
-class AdminStudentListView(ListView):
+class AdminStudentListView(LoginRequiredMixin, ListView):
     model = User
     template_name = 'students/admin_student_list.html'
     context_object_name = 'students'
     
+    # Redireciona o usuário não autenticado para a página de login
+    login_url = '/login/'  # Substitua pelo caminho correto se necessário
+
     def get_queryset(self):
         # Apenas alunos (não administradores ou instrutores)
         return User.objects.filter(role='aluno')
@@ -62,14 +66,6 @@ class AdminStudentListView(ListView):
 
         return context
 
-# Class para exibir detalhes do treino, incluindo os Training Sheets
-class TrainingDetailView(View):
-    def get(self, request, pk):
-        # Obtém o treino pelo ID (pk)
-        training = get_object_or_404(Training, pk=pk)
-        # Obtém todos os training sheets relacionados ao treino
-        training_sheets = TrainingSheet.objects.filter(training=training)
-        return render(request, 'trainings/detail.html', {'training': training, 'training_sheets': training_sheets})
 
 # Class para exibir detalhes da frequência
 class AttendanceDetailView(View):

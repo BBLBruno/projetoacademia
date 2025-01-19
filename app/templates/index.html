@@ -27,13 +27,12 @@
   <div class="container mt-5">
     <div class="jumbotron text-center">
       <h1 class="display-4">Olá, é bom te ver por aqui</h1>
-      <p class="lead">Este é o painel principal. Acesse as seções para visualizar informações dos usuários, planos, pagamentos, entre outros.</p>
       <p class="lead">Seja Bem Vindo(a)</p>
       <!-- Alteração do botão -->
-      <a href="{% url 'student_training_list' %}" class="btn btn-primary">Treinos Disponíveis</a>
+      <a href="{% url 'student_training_list' %}" class="btn btn-primary">Área do aluno</a>
       <a href="{% url 'instructor_list' %}" class="btn btn-primary">Ver Instrutores</a>
-      <a href="{% url 'user_profile_list' 'administrador' %}" class="btn btn-primary">Administradores</a>
-      <a href="{% url 'admin_student_list' %}" class="btn btn-primary">Visualizar Alunos</a>
+      <a href="{% url 'admin_student_list' %}" class="btn btn-primary">Área Administrativa</a>
+      <a href="{% url 'plan_list' %}" class="btn btn-primary">Ver Planos</a>
     </div>
   </div>
 

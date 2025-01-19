@@ -86,10 +86,10 @@ class TrainingSheet(models.Model):
 
 # Treino
 class Training(models.Model):
+    name = models.CharField(max_length=50, verbose_name="Nome do Treino")
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Aluno")
     instructor = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="treinos", verbose_name="Instrutor")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Criado em")
-    rest_time = models.IntegerField(default=90, verbose_name="Tempo de Descanso (segundos)")
     
     def __str__(self):
         return f"Treino de {self.user.username} - {self.created_at.strftime('%d/%m/%Y %H:%M')}"

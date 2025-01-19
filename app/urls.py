@@ -2,13 +2,7 @@ from django.urls import path
 from . import views
 from django.contrib.auth import views as auth_views
 
-
-# Usuário Aluno
-from django.urls import path
-from . import views
-from django.contrib.auth import views as auth_views
-
-urlpatterns = [
+urlpatterns = [    
     # Login e Logout
     path('login/', auth_views.LoginView.as_view(template_name="auth/login.html"), name='login'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
@@ -16,20 +10,16 @@ urlpatterns = [
     # Página inicial
     path('', views.home, name='home'),
 
+    # URL para a área do aluno com os treinos
+    path('area_do_aluno/', views.StudentTrainingListView.as_view(), name='student_training_list'),
+
     # Página de administradores - Exibir todos os alunos
     path('perfil/alunos/', views.AdminStudentListView.as_view(), name='admin_student_list'),
 
     # Página de instrutores.
     path('instrutores/', views.InstructorListView.as_view(), name='instructor_list'),
 
-    # URL para a área do aluno com os treinos
-    path('area_do_aluno/', views.StudentTrainingListView.as_view(), name='student_training_list'),
-
-    # URL para detalhes do treino
-    path('treino/<int:pk>/', views.TrainingDetailView.as_view(), name='training_detail'),
-
-    # Detalhes Treino
-    path('treino/<int:pk>/', views.TrainingDetailView.as_view(), name='training_detail'),
+    # Detalhes frequência
     path('frequencia/<int:pk>/', views.AttendanceDetailView.as_view(), name='attendance_detail'),
 
     # Perfil de Usuário por tipo

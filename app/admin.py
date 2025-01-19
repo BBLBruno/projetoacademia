@@ -48,7 +48,7 @@ class TrainingSheetInline(admin.TabularInline):
 # Admin para o modelo Training
 @admin.register(Training)
 class TrainingAdmin(admin.ModelAdmin):
-    list_display = ("user", "instructor", "created_at")
+    list_display = ("name", "user", "instructor", "created_at")
     search_fields = ("user__username", "instructor__username")
     list_filter = ("created_at",)
     ordering = ("created_at",)
