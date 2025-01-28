@@ -15,16 +15,18 @@
             <thead>
                 <tr>
                     <th>Exercício</th>
-                    <th>Repetições</th>
                     <th>Séries</th>
+                    <th>Repetições</th>
+                    <th>Tempo de descanso</th>
                 </tr>
             </thead>
             <tbody>
-                {% for training in training.exercises.all %}
+                {% for exercise in training.trainingsheet_set.all %}
                     <tr>
-                        <td>{{ exercise.name }}</td>
+                        <td>{{ exercise.exercise.name }}</td>
+                        <td>{{ exercise.series }}</td>
                         <td>{{ exercise.repetitions }}</td>
-                        <td>{{ exercise.sets }}</td>
+                        <td>{{ exercise.rest_time }}</td>                        
                     </tr>
                 {% empty %}
                     <tr>

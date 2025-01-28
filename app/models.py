@@ -26,6 +26,10 @@ class User(AbstractUser):
     )
     role = models.CharField(max_length=15, choices=ROLE_CHOICES, default="aluno")
 
+    class Meta:
+        verbose_name = "Usuário"
+        verbose_name_plural = "Usuários"  
+
 # Plano de Adesão
 class Plan(models.Model):
     name = models.CharField(max_length=50, verbose_name="Nome do Plano")
@@ -34,6 +38,10 @@ class Plan(models.Model):
 
     def __str__(self):
         return self.name
+    
+    class Meta:
+        verbose_name = "Plano"
+        verbose_name_plural = "Planos" 
 
 # Pagamento
 class Payment(models.Model):
@@ -48,6 +56,10 @@ class Payment(models.Model):
     due_date = models.DateField(verbose_name="Data de Vencimento")
     payment_date = models.DateField(null=True, blank=True, verbose_name="Data de Pagamento")
 
+    class Meta:
+        verbose_name = "Pagamento"
+        verbose_name_plural = "Pagamentos" 
+
 # Frequência
 class Attendance(models.Model):
     user = models.ForeignKey('User', on_delete=models.CASCADE, verbose_name="Usuário")
@@ -56,6 +68,10 @@ class Attendance(models.Model):
 
     def __str__(self):
         return f"Frequência de {self.user.username} - {self.date.strftime('%d/%m/%Y %H:%M')}"
+    
+    class Meta:
+        verbose_name = "Frequência"
+        verbose_name_plural = "Frequências" 
 
 # Equipamento
 class Equipment(models.Model):
@@ -65,6 +81,10 @@ class Equipment(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        verbose_name = "Equipamento"
+        verbose_name_plural = "Equipamentos"    
+
 # Exercício
 class Exercise(models.Model):
     name = models.CharField(max_length=50, verbose_name="Nome do Exercício")
@@ -73,16 +93,25 @@ class Exercise(models.Model):
 
     def __str__(self):
         return self.name
+    
+    class Meta:
+        verbose_name = "Exercício"
+        verbose_name_plural = "Exercício"
 
 # Ficha de Treino
 class TrainingSheet(models.Model):
     training = models.ForeignKey('Training', on_delete=models.CASCADE, verbose_name="Treino")
     exercise = models.ForeignKey('Exercise', on_delete=models.CASCADE, verbose_name="Exercício")
+    series = models.IntegerField(default=12, verbose_name="Número de Séries")
     repetitions = models.IntegerField(default=12, verbose_name="Número de Repetições")
     rest_time = models.IntegerField(default=90, verbose_name="Tempo de Descanso (segundos)")
 
     def __str__(self):
         return f"{self.training.user.username} - {self.exercise.name}"
+    
+    class Meta:
+        verbose_name = "Ficha de Treino"
+        verbose_name_plural = "Fichas de Treino"
 
 # Treino
 class Training(models.Model):
@@ -93,3 +122,7 @@ class Training(models.Model):
     
     def __str__(self):
         return f"Treino de {self.user.username} - {self.created_at.strftime('%d/%m/%Y %H:%M')}"
+    
+    class Meta:
+        verbose_name = "Treinamento"
+        verbose_name_plural = "Treinamentos"

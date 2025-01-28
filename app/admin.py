@@ -35,7 +35,7 @@ class AttendanceAdmin(admin.ModelAdmin):
 # Admin para o modelo TrainingSheet
 @admin.register(TrainingSheet)
 class TrainingSheetAdmin(admin.ModelAdmin):
-    list_display = ("training", "exercise", "repetitions", "rest_time")
+    list_display = ("training", "exercise", "series", "repetitions", "rest_time")
     search_fields = ("training__user__username", "exercise__name")
     list_filter = ("training__user__username", "exercise__name")
     ordering = ("training", "exercise")
